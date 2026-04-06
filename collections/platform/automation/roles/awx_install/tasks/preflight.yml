@@ -10,9 +10,9 @@
   ansible.builtin.assert:
     that:
       - awx_db_host | length > 0
-      - awx_db_password | length > 0
-      - awx_admin_password | length > 0
-    fail_msg: "awx_db_host, awx_db_password, and awx_admin_password must be set"
+      - awx_db_secret_name is defined
+      - awx_admin_secret_name is defined
+    fail_msg: "awx_db_host, awx_db_secret_name, and awx_admin_secret_name must be set"
 
 - name: Check available memory
   ansible.builtin.assert:
