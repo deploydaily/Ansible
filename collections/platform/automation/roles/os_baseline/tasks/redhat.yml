@@ -54,16 +54,3 @@
   ansible.posix.selinux:
     policy: targeted
     state: enforcing
-
-- name: Enable firewalld
-  ansible.builtin.service:
-    name: firewalld
-    state: started
-    enabled: true
-
-- name: Allow SSH through firewall
-  ansible.posix.firewalld:
-    service: ssh
-    permanent: true
-    state: enabled
-    immediate: true
