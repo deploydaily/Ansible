@@ -1,0 +1,30 @@
+---
+- name: Assert RHEL 9
+  ansible.builtin.assert:
+    that:
+      - ansible_distribution == "RedHat"
+      - ansible_distribution_major_version == "9"
+    fail_msg: "AWX install role requires RHEL 9. Found: {{ ansible_distribution }} {{ ansible_distribution_major_version }}"
+
+- name: Assert required variables are set
+  ansible.builtin.assert:
+    that:
+      - awx_db_host | length > 0
+      - awx_db_password | length > 0
+      - awx_admin_password | length > 0
+    fail_msg: "awx_db_host, awx_db_password, and awx_admin_password must be set"
+
+- name: Check available memory
+  ansible.builtin.assert:
+    that: ansible_memtotal_mb >= 3500
+    fail_msg: "AWX requires at least 4GB RAM. Found: {{ ansible_memtotal_mb }}MB"
+
+- name: Check available disk space
+  ansible.builtin.shell: df /opt --output=avail | tail -1
+  register: disk_avail
+  changed_when: false
+
+- name: Assert sufficient disk space
+  ansible.builtin.assert:
+    that: disk_avail.stdout | int >= 10485760  # 10GB in KB
+    fail_msg: "AWX requires at least 10GB free on /opt"

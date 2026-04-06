@@ -1,0 +1,42 @@
+---
+# AWX version
+awx_version: "24.6.1"
+
+# AWX system user
+awx_user: awx
+awx_group: awx
+
+# Directories
+awx_install_dir: /opt/awx-src
+awx_config_dir: /etc/awx
+awx_data_dir: /var/lib/awx
+awx_log_dir: /var/log/awx
+awx_run_dir: /var/run/awx
+
+# Database — override with RDS values
+awx_db_host: localhost
+awx_db_port: 5432
+awx_db_name: awx
+awx_db_user: awx
+awx_db_password: ""  # always pass via extra_vars or vault
+
+# Redis
+awx_redis_host: 127.0.0.1
+awx_redis_port: 6379
+
+# Web
+awx_web_port: 8052
+awx_admin_user: admin
+awx_admin_password: ""  # always pass via extra_vars or vault
+awx_admin_email: admin@awx.local
+
+# nginx TLS
+awx_tls_self_signed: true
+awx_tls_cert: /etc/nginx/awx.crt
+awx_tls_key: /etc/nginx/awx.key
+
+# Celery
+awx_celery_concurrency: 4
+
+# Receptor
+awx_receptor_socket: /var/run/awx/receptor.sock

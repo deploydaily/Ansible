@@ -1,0 +1,52 @@
+---
+- name: Deploy awx-web systemd unit
+  ansible.builtin.template:
+    src: awx-web.service.j2
+    dest: /etc/systemd/system/awx-web.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: daemon reload
+
+- name: Deploy awx-task systemd unit
+  ansible.builtin.template:
+    src: awx-task.service.j2
+    dest: /etc/systemd/system/awx-task.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: daemon reload
+
+- name: Deploy awx-receptor systemd unit
+  ansible.builtin.template:
+    src: awx-receptor.service.j2
+    dest: /etc/systemd/system/awx-receptor.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: daemon reload
+
+- name: Deploy receptor config
+  ansible.builtin.template:
+    src: receptor.conf.j2
+    dest: "{{ awx_config_dir }}/receptor.conf"
+    owner: "{{ awx_user }}"
+    group: "{{ awx_group }}"
+    mode: "0640"
+  notify: restart awx-receptor
+
+- name: Enable and start Redis
+  ansible.builtin.service:
+    name: redis
+    state: started
+    enabled: true
+
+- name: Enable and start AWX services
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - awx-web
+    - awx-task
+    - awx-receptor

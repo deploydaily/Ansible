@@ -1,0 +1,22 @@
+# Managed by Ansible — platform.automation.awx_install
+[Unit]
+Description=AWX Web Service
+After=network.target redis.service
+Requires=redis.service
+
+[Service]
+Type=simple
+User={{ awx_user }}
+Group={{ awx_group }}
+WorkingDirectory={{ awx_install_dir }}
+Environment=AWX_SETTINGS_FILE={{ awx_config_dir }}/settings.py
+Environment=DJANGO_SETTINGS_MODULE=awx.settings.production
+ExecStart=/usr/local/bin/daphne -b 127.0.0.1 -p {{ awx_web_port }} awx.asgi:channel_layer
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=awx-web
+
+[Install]
+WantedBy=multi-user.target

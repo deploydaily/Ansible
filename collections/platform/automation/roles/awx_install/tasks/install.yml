@@ -1,0 +1,26 @@
+---
+- name: Clone AWX source
+  ansible.builtin.git:
+    repo: https://github.com/ansible/awx.git
+    dest: "{{ awx_install_dir }}"
+    version: "{{ awx_version }}"
+    depth: 1
+    force: false
+
+- name: Install AWX Python requirements
+  ansible.builtin.pip:
+    requirements: "{{ awx_install_dir }}/requirements/requirements.txt"
+    executable: pip3
+
+- name: Install AWX package in editable mode
+  ansible.builtin.pip:
+    name: "{{ awx_install_dir }}"
+    extra_args: "-e"
+    executable: pip3
+
+- name: Set ownership of install dir
+  ansible.builtin.file:
+    path: "{{ awx_install_dir }}"
+    owner: "{{ awx_user }}"
+    group: "{{ awx_group }}"
+    recurse: true

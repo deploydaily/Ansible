@@ -1,0 +1,14 @@
+---
+- name: restart chronyd
+  ansible.builtin.service:
+    name: chronyd
+    state: restarted
+
+- name: restart sshd
+  ansible.builtin.service:
+    name: sshd
+    state: restarted
+
+- name: reboot windows
+  ansible.windows.win_reboot:
+    reboot_timeout: 300

@@ -1,0 +1,27 @@
+---
+namespace: platform
+name: automation
+version: 1.0.0
+readme: README.md
+description: >
+  Enterprise automation collection for AWX/AAP platform engineering.
+  Covers OS baseline, AWX installation, and AWX configuration as code.
+authors:
+  - platform-ops
+license:
+  - GPL-2.0-or-later
+tags:
+  - linux
+  - windows
+  - awx
+  - aap
+  - enterprise
+  - rhel
+repository: https://github.com/deploydaily/Ansible
+documentation: https://github.com/deploydaily/Ansible/blob/main/docs/ARCHITECTURE.md
+homepage: https://github.com/deploydaily/Ansible
+dependencies:
+  amazon.aws: ">=7.0.0"
+  ansible.posix: ">=1.5.0"
+  community.general: ">=8.0.0"
+  ansible.windows: ">=2.0.0"

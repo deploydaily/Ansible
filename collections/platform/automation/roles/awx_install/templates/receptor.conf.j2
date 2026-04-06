@@ -1,0 +1,14 @@
+# Managed by Ansible — platform.automation.awx_install
+---
+- node:
+    id: awx-controller
+
+- control-service:
+    service: control
+    filename: {{ awx_receptor_socket }}
+
+- work-command:
+    worktype: local
+    command: /usr/local/bin/ansible-runner
+    params: worker
+    allowruntimeparams: true

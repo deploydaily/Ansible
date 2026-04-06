@@ -1,0 +1,25 @@
+# Managed by Ansible — platform.automation.awx_install
+[Unit]
+Description=AWX Task Dispatcher
+After=network.target redis.service awx-web.service
+Requires=redis.service
+
+[Service]
+Type=simple
+User={{ awx_user }}
+Group={{ awx_group }}
+WorkingDirectory={{ awx_install_dir }}
+Environment=AWX_SETTINGS_FILE={{ awx_config_dir }}/settings.py
+Environment=DJANGO_SETTINGS_MODULE=awx.settings.production
+ExecStart=/usr/local/bin/celery -A awx.main.celery_app:app worker \
+  --loglevel=INFO \
+  --concurrency={{ awx_celery_concurrency }} \
+  -n awx_task@%%h
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=awx-task
+
+[Install]
+WantedBy=multi-user.target

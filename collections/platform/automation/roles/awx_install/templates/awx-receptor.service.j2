@@ -1,0 +1,18 @@
+# Managed by Ansible — platform.automation.awx_install
+[Unit]
+Description=AWX Receptor Execution Mesh
+After=network.target
+
+[Service]
+Type=simple
+User={{ awx_user }}
+Group={{ awx_group }}
+ExecStart=/usr/local/bin/receptor --config {{ awx_config_dir }}/receptor.conf
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=awx-receptor
+
+[Install]
+WantedBy=multi-user.target
