@@ -1,0 +1,25 @@
+---
+plugin: amazon.aws.aws_ec2
+regions:
+  - us-east-1
+filters:
+  instance-state-name: running
+  tag:managed_by: awx
+keyed_groups:
+  - key: tags.role
+    prefix: role
+    separator: "_"
+  - key: tags.env
+    prefix: env
+    separator: "_"
+  - key: tags.os_type
+    prefix: os
+    separator: "_"
+compose:
+  ansible_host: private_ip_address
+hostnames:
+  - tag:Name
+groups:
+  awx_controllers: "tags.role == 'controller'"
+  linux: "tags.os_type == 'linux'"
+  windows: "tags.os_type == 'windows'"

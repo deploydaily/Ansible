@@ -1,0 +1,15 @@
+---
+- name: Install AWX on RHEL 9 controller
+  hosts: awx_controllers
+  become: true
+  gather_facts: true
+
+  vars:
+    aws_region: "us-east-1"
+
+  roles:
+    - role: platform.automation.os_baseline
+      tags: [os_baseline]
+
+    - role: platform.automation.awx_install
+      tags: [awx_install]

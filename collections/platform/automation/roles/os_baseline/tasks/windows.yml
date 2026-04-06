@@ -28,8 +28,8 @@
     name: fDenyTSConnections
     data: 0
     type: dword
-
-- name: Configure Windows Firewall — allow WinRM HTTPS
+    
+- name: Configure Windows Firewall - allow WinRM HTTPS
   community.windows.win_firewall_rule:
     name: WinRM-HTTPS
     localport: 5986
