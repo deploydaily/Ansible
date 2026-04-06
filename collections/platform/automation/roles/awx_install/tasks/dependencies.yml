@@ -11,7 +11,7 @@
       - make
       - libffi-devel
       - openssl-devel
-      - postgresql15
+      - postgresql
       - nginx
       - redis
       - nodejs
