@@ -13,7 +13,6 @@
       - pip
       - setuptools
       - wheel
-      - pkg_resources
     state: latest
     executable: pip3
 
