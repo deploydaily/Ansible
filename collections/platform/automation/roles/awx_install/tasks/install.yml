@@ -31,6 +31,10 @@
     "django-ansible-base[rest_filters,jwt_consumer,resource_registry,rbac] @ git+https://github.com/ansible/django-ansible-base@devel"
   changed_when: true
 
+- name: Pin Django to AWX 24.6.1 compatible version
+  ansible.builtin.shell: python3.11 -m pip install "django==4.2.10"
+  changed_when: true
+
 - name: Set AWX version file to avoid setuptools_scm issues
   ansible.builtin.copy:
     content: "{{ awx_version }}"
