@@ -16,7 +16,7 @@
     state: latest
     executable: pip3
 
-- name: Install AWX Python requirements (excluding xmlsec)
+- name: Install AWX Python requirements (excluding xmlsec and pinned build tools)
   ansible.builtin.shell: |
     grep -v "^xmlsec\|^pip==\|^setuptools==" \
       {{ awx_install_dir }}/requirements/requirements.txt \
@@ -26,11 +26,13 @@
   environment:
     PKG_CONFIG_PATH: /usr/lib64/pkgconfig:/usr/share/pkgconfig
 
-- name: Install AWX package in editable mode
-  ansible.builtin.pip:
-    name: "{{ awx_install_dir }}"
-    extra_args: "--no-build-isolation -e"
-    executable: pip3
+- name: Set AWX version file to avoid setuptools_scm issues
+  ansible.builtin.copy:
+    content: "{{ awx_version }}"
+    dest: "{{ awx_install_dir }}/awx/VERSION"
+    owner: "{{ awx_user }}"
+    group: "{{ awx_group }}"
+    mode: "0644"
 
 - name: Set ownership of install dir
   ansible.builtin.file:

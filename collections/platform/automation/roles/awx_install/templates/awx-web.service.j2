@@ -11,6 +11,7 @@ Group={{ awx_group }}
 WorkingDirectory={{ awx_install_dir }}
 Environment=AWX_SETTINGS_FILE={{ awx_config_dir }}/settings.py
 Environment=DJANGO_SETTINGS_MODULE=awx.settings.production
+Environment=PYTHONPATH={{ awx_install_dir }}
 ExecStart=/usr/local/bin/daphne -b 127.0.0.1 -p {{ awx_web_port }} awx.asgi:channel_layer
 Restart=always
 RestartSec=5
