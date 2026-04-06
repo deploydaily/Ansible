@@ -1,0 +1,17 @@
+---
+- name: Wait for AWX web to be ready
+  ansible.builtin.uri:
+    url: "https://localhost/api/v2/ping/"
+    validate_certs: false
+    status_code: 200
+  register: awx_ping
+  until: awx_ping.status == 200
+  retries: 30
+  delay: 20
+
+- name: Print AWX access info
+  ansible.builtin.debug:
+    msg:
+      - "AWX is up and running"
+      - "UI: https://{{ ansible_host }}"
+      - "Admin user: {{ awx_admin_user }}"

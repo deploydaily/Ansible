@@ -1,0 +1,33 @@
+---
+- name: Create AWX system group
+  ansible.builtin.group:
+    name: "{{ awx_group }}"
+    system: true
+    state: present
+
+- name: Create AWX system user
+  ansible.builtin.user:
+    name: "{{ awx_user }}"
+    group: "{{ awx_group }}"
+    system: true
+    home: "{{ awx_data_dir }}"
+    shell: /sbin/nologin
+    create_home: false
+    state: present
+
+- name: Create AWX directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ awx_user }}"
+    group: "{{ awx_group }}"
+    mode: "0755"
+  loop:
+    - "{{ awx_config_dir }}"
+    - "{{ awx_data_dir }}"
+    - "{{ awx_data_dir }}/projects"
+    - "{{ awx_data_dir }}/job_status"
+    - "{{ awx_data_dir }}/public"
+    - "{{ awx_data_dir }}/public/static"
+    - "{{ awx_log_dir }}"
+    - "{{ awx_run_dir }}"

@@ -1,0 +1,42 @@
+# Managed by Ansible — platform.automation.awx_install
+import os
+
+ADMINS = []
+STATIC_ROOT = '{{ awx_data_dir }}/public/static'
+PROJECTS_ROOT = '{{ awx_data_dir }}/projects'
+JOBOUTPUT_ROOT = '{{ awx_data_dir }}/job_status'
+
+SECRET_KEY = '{{ awx_secret_key }}'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': '{{ awx_db_name }}',
+        'USER': '{{ awx_db_user }}',
+        'PASSWORD': '{{ awx_db_password }}',
+        'HOST': '{{ awx_db_host }}',
+        'PORT': '{{ awx_db_port }}',
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://{{ awx_redis_host }}:{{ awx_redis_port }}/',
+    }
+}
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('{{ awx_redis_host }}', {{ awx_redis_port }})],
+        },
+    }
+}
+
+BROKER_URL = 'redis://{{ awx_redis_host }}:{{ awx_redis_port }}/'
+CELERY_RESULT_BACKEND = 'redis://{{ awx_redis_host }}:{{ awx_redis_port }}/'
+
+AWX_PROOT_ENABLED = False
+ALLOWED_HOSTS = ['*']

@@ -1,0 +1,19 @@
+---
+- name: Generate AWX secret key
+  ansible.builtin.shell: openssl rand -hex 64
+  register: awx_secret_key_result
+  changed_when: false
+  no_log: true
+
+- name: Deploy AWX settings.py
+  ansible.builtin.template:
+    src: settings.py.j2
+    dest: "{{ awx_config_dir }}/settings.py"
+    owner: "{{ awx_user }}"
+    group: "{{ awx_group }}"
+    mode: "0640"
+  vars:
+    awx_secret_key: "{{ awx_secret_key_result.stdout }}"
+  notify:
+    - restart awx-web
+    - restart awx-task

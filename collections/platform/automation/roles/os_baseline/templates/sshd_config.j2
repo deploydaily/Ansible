@@ -1,0 +1,27 @@
+# Managed by Ansible — platform.automation.os_baseline
+Port 22
+AddressFamily inet
+ListenAddress 0.0.0.0
+
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+HostKey /etc/ssh/ssh_host_ed25519_key
+
+SyslogFacility AUTHPRIV
+LogLevel INFO
+
+PermitRootLogin {{ ssh_permit_root_login }}
+PasswordAuthentication {{ ssh_password_authentication }}
+ChallengeResponseAuthentication no
+MaxAuthTries {{ ssh_max_auth_tries }}
+PubkeyAuthentication yes
+AuthorizedKeysFile .ssh/authorized_keys
+
+ClientAliveInterval {{ ssh_client_alive_interval }}
+ClientAliveCountMax {{ ssh_client_alive_count_max }}
+
+UsePAM yes
+X11Forwarding no
+PrintMotd no
+AcceptEnv LANG LC_*
+Subsystem sftp /usr/lib/openssh/sftp-server

@@ -1,0 +1,14 @@
+---
+galaxy_info:
+  role_name: awx_install
+  namespace: platform
+  description: >
+    Installs AWX on RHEL 9 as systemd services - mirrors enterprise AAP
+    installer pattern without requiring a Red Hat subscription.
+  platforms:
+    - name: EL
+      versions: [9]
+  min_ansible_version: "2.14"
+
+dependencies:
+  - role: platform.automation.os_baseline

@@ -1,0 +1,65 @@
+---
+- name: Run AWX database migrations
+  ansible.builtin.shell: |
+    AWX_SETTINGS_FILE={{ awx_config_dir }}/settings.py \
+    DJANGO_SETTINGS_MODULE=awx.settings.production \
+    python3 {{ awx_install_dir }}/manage.py migrate --noinput
+  become: true
+  become_user: "{{ awx_user }}"
+  register: migrate_result
+  changed_when: "'Applying' in migrate_result.stdout"
+
+- name: Create AWX preload data
+  ansible.builtin.shell: |
+    AWX_SETTINGS_FILE={{ awx_config_dir }}/settings.py \
+    DJANGO_SETTINGS_MODULE=awx.settings.production \
+    python3 {{ awx_install_dir }}/manage.py create_preload_data
+  become: true
+  become_user: "{{ awx_user }}"
+  register: preload_result
+  changed_when: "'Created' in preload_result.stdout"
+  failed_when: false
+
+- name: Collect static files
+  ansible.builtin.shell: |
+    AWX_SETTINGS_FILE={{ awx_config_dir }}/settings.py \
+    DJANGO_SETTINGS_MODULE=awx.settings.production \
+    python3 {{ awx_install_dir }}/manage.py collectstatic --noinput
+  become: true
+  become_user: "{{ awx_user }}"
+  changed_when: false
+
+- name: Create AWX admin user
+  ansible.builtin.shell: |
+    AWX_SETTINGS_FILE={{ awx_config_dir }}/settings.py \
+    DJANGO_SETTINGS_MODULE=awx.settings.production \
+    python3 {{ awx_install_dir }}/manage.py createsuperuser \
+      --noinput \
+      --username {{ awx_admin_user }} \
+      --email {{ awx_admin_email }}
+  become: true
+  become_user: "{{ awx_user }}"
+  register: create_admin
+  changed_when: "'created' in create_admin.stdout | lower"
+  failed_when:
+    - create_admin.rc != 0
+    - "'already exists' not in create_admin.stderr"
+
+- name: Set AWX admin password
+  ansible.builtin.shell: |
+    AWX_SETTINGS_FILE={{ awx_config_dir }}/settings.py \
+    DJANGO_SETTINGS_MODULE=awx.settings.production \
+    python3 -c "
+    import django, os
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'awx.settings.production'
+    os.environ['AWX_SETTINGS_FILE'] = '{{ awx_config_dir }}/settings.py'
+    django.setup()
+    from django.contrib.auth.models import User
+    u = User.objects.get(username='{{ awx_admin_user }}')
+    u.set_password('{{ awx_admin_password }}')
+    u.save()
+    "
+  become: true
+  become_user: "{{ awx_user }}"
+  no_log: true
+  changed_when: true

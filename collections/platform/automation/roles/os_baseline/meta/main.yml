@@ -1,0 +1,13 @@
+---
+galaxy_info:
+  role_name: os_baseline
+  namespace: platform
+  description: OS baseline configuration for RHEL and Windows managed nodes
+  platforms:
+    - name: EL
+      versions: [8, 9]
+    - name: Windows
+      versions: [2022]
+  min_ansible_version: "2.14"
+
+dependencies: []

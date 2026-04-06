@@ -1,0 +1,40 @@
+---
+- name: Set hostname
+  ansible.windows.win_hostname:
+    name: "{{ inventory_hostname }}"
+  notify: reboot windows
+
+- name: Install baseline packages via Chocolatey
+  chocolatey.chocolatey.win_chocolatey:
+    name: "{{ baseline_packages_windows }}"
+    state: present
+
+- name: Configure WinRM HTTPS
+  ansible.windows.win_shell: |
+    $cert = New-SelfSignedCertificate -DnsName $env:COMPUTERNAME -CertStoreLocation Cert:\LocalMachine\My
+    winrm create winrm/config/Listener?Address=*+Transport=HTTPS "@{Hostname=`"$env:COMPUTERNAME`"; CertificateThumbprint=`"$($cert.Thumbprint)`"}"
+  args:
+    creates: C:\Windows\System32\winrm_https_configured.flag
+
+- name: Set WinRM service to automatic
+  ansible.windows.win_service:
+    name: WinRM
+    start_mode: auto
+    state: started
+
+- name: Enable RDP (optional - enterprise standard)
+  ansible.windows.win_regedit:
+    path: HKLM:\System\CurrentControlSet\Control\Terminal Server
+    name: fDenyTSConnections
+    data: 0
+    type: dword
+
+- name: Configure Windows Firewall — allow WinRM HTTPS
+  community.windows.win_firewall_rule:
+    name: WinRM-HTTPS
+    localport: 5986
+    action: allow
+    direction: in
+    protocol: tcp
+    state: present
+    enabled: true
