@@ -26,6 +26,11 @@
   environment:
     PKG_CONFIG_PATH: /usr/lib64/pkgconfig:/usr/share/pkgconfig
 
+- name: Install AWX git-sourced requirements (includes django-ansible-base)
+  ansible.builtin.pip:
+    requirements: "{{ awx_install_dir }}/requirements/requirements_git.txt"
+    executable: pip3
+
 - name: Set AWX version file to avoid setuptools_scm issues
   ansible.builtin.copy:
     content: "{{ awx_version }}"
