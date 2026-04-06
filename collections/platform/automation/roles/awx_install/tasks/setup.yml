@@ -31,3 +31,11 @@
     - "{{ awx_data_dir }}/public/static"
     - "{{ awx_log_dir }}"
     - "{{ awx_run_dir }}"
+
+- name: Create legacy Tower log directory (required by AWX logging config)
+  ansible.builtin.file:
+    path: /var/log/tower
+    state: directory
+    owner: "{{ awx_user }}"
+    group: "{{ awx_group }}"
+    mode: "0755"
