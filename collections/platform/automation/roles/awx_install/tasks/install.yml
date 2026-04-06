@@ -7,9 +7,21 @@
     depth: 1
     force: false
 
+- name: Upgrade pip and setuptools before AWX requirements
+  ansible.builtin.pip:
+    name:
+      - pip
+      - setuptools
+      - wheel
+      - pkg_resources
+    state: latest
+    executable: pip3
+
 - name: Install AWX Python requirements (excluding xmlsec)
   ansible.builtin.shell: |
-    grep -v "^xmlsec" {{ awx_install_dir }}/requirements/requirements.txt > /tmp/requirements_filtered.txt
+    grep -v "^xmlsec\|^pip==\|^setuptools==" \
+      {{ awx_install_dir }}/requirements/requirements.txt \
+      > /tmp/requirements_filtered.txt
     pip3 install -r /tmp/requirements_filtered.txt
   changed_when: true
   environment:
@@ -18,7 +30,7 @@
 - name: Install AWX package in editable mode
   ansible.builtin.pip:
     name: "{{ awx_install_dir }}"
-    extra_args: "-e"
+    extra_args: "--no-build-isolation -e"
     executable: pip3
 
 - name: Set ownership of install dir
