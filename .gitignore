@@ -1,0 +1,69 @@
+# =============================================================
+# Ansible
+# =============================================================
+
+# Retry files
+*.retry
+
+# Fact cache
+.facts/
+fact_cache/
+/tmp/ansible_facts/
+
+# Vault password files
+.vault_pass
+.vault_password
+vault_pass.txt
+*.vault
+
+# Ansible log
+ansible.log
+*.log
+
+# Dynamic inventory cache
+.cache/
+inventory_cache/
+
+# Temporary files
+*.swp
+*.swo
+*~
+
+# =============================================================
+# Collections + Roles (installed, not source)
+# =============================================================
+
+# Ignore installed collections — only keep source (collections/platform/)
+collections/ansible_collections/
+collections/amazon/
+collections/community/
+collections/ansible/
+collections/awx/
+
+# Installed roles
+roles/
+
+# =============================================================
+# Python
+# =============================================================
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+venv/
+.venv/
+env/
+pip-wheel-metadata/
+
+# =============================================================
+# Molecule
+# =============================================================
+.molecule/
+molecule/**/molecule.yml.bak
+
+# =============================================================
+# AWS / Secrets
