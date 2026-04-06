@@ -1,9 +1,9 @@
----
 - name: Run AWX database migrations
   ansible.builtin.shell: |
     AWX_SETTINGS_FILE={{ awx_config_dir }}/settings.py \
     DJANGO_SETTINGS_MODULE=awx.settings.production \
-    python3 {{ awx_install_dir }}/manage.py migrate --noinput
+    PYTHONPATH={{ awx_install_dir }} \
+    python3.11 {{ awx_install_dir }}/manage.py migrate --noinput
   become: true
   become_user: "{{ awx_user }}"
   register: migrate_result
@@ -13,7 +13,8 @@
   ansible.builtin.shell: |
     AWX_SETTINGS_FILE={{ awx_config_dir }}/settings.py \
     DJANGO_SETTINGS_MODULE=awx.settings.production \
-    python3 {{ awx_install_dir }}/manage.py create_preload_data
+    PYTHONPATH={{ awx_install_dir }} \
+    python3.11 {{ awx_install_dir }}/manage.py create_preload_data
   become: true
   become_user: "{{ awx_user }}"
   register: preload_result
@@ -24,7 +25,8 @@
   ansible.builtin.shell: |
     AWX_SETTINGS_FILE={{ awx_config_dir }}/settings.py \
     DJANGO_SETTINGS_MODULE=awx.settings.production \
-    python3 {{ awx_install_dir }}/manage.py collectstatic --noinput
+    PYTHONPATH={{ awx_install_dir }} \
+    python3.11 {{ awx_install_dir }}/manage.py collectstatic --noinput
   become: true
   become_user: "{{ awx_user }}"
   changed_when: false
@@ -33,7 +35,8 @@
   ansible.builtin.shell: |
     AWX_SETTINGS_FILE={{ awx_config_dir }}/settings.py \
     DJANGO_SETTINGS_MODULE=awx.settings.production \
-    python3 {{ awx_install_dir }}/manage.py createsuperuser \
+    PYTHONPATH={{ awx_install_dir }} \
+    python3.11 {{ awx_install_dir }}/manage.py createsuperuser \
       --noinput \
       --username {{ awx_admin_user }} \
       --email {{ awx_admin_email }}
@@ -49,8 +52,10 @@
   ansible.builtin.shell: |
     AWX_SETTINGS_FILE={{ awx_config_dir }}/settings.py \
     DJANGO_SETTINGS_MODULE=awx.settings.production \
-    python3 -c "
-    import django, os
+    PYTHONPATH={{ awx_install_dir }} \
+    python3.11 -c "
+    import django, os, sys
+    sys.path.insert(0, '{{ awx_install_dir }}')
     os.environ['DJANGO_SETTINGS_MODULE'] = 'awx.settings.production'
     os.environ['AWX_SETTINGS_FILE'] = '{{ awx_config_dir }}/settings.py'
     django.setup()

@@ -11,29 +11,25 @@
     depth: 1
     force: false
 
-- name: Upgrade pip and setuptools before AWX requirements
-  ansible.builtin.pip:
-    name:
-      - pip
-      - setuptools
-      - wheel
-    state: latest
-    executable: pip3
+- name: Upgrade pip and setuptools for Python 3.11
+  ansible.builtin.shell: python3.11 -m pip install --upgrade pip setuptools wheel
+  changed_when: true
 
 - name: Install AWX Python requirements (excluding xmlsec and pinned build tools)
   ansible.builtin.shell: |
     grep -v "^xmlsec\|^pip==\|^setuptools==" \
       {{ awx_install_dir }}/requirements/requirements.txt \
       > /tmp/requirements_filtered.txt
-    pip3 install -r /tmp/requirements_filtered.txt
+    python3.11 -m pip install -r /tmp/requirements_filtered.txt
   changed_when: true
   environment:
     PKG_CONFIG_PATH: /usr/lib64/pkgconfig:/usr/share/pkgconfig
 
-- name: Install django-ansible-base from git (direct URL syntax)
-  ansible.builtin.pip:
-    name: "django-ansible-base[rest_filters,jwt_consumer,resource_registry,rbac] @ git+https://github.com/ansible/django-ansible-base@devel"
-    executable: pip3
+- name: Install django-ansible-base from git (Python 3.11)
+  ansible.builtin.shell: >
+    python3.11 -m pip install
+    "django-ansible-base[rest_filters,jwt_consumer,resource_registry,rbac] @ git+https://github.com/ansible/django-ansible-base@devel"
+  changed_when: true
 
 - name: Set AWX version file to avoid setuptools_scm issues
   ansible.builtin.copy:

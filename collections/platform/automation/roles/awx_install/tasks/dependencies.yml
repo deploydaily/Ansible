@@ -24,6 +24,9 @@
       - xmlsec1              # needed by xmlsec Python package
       - xmlsec1-openssl      # xmlsec OpenSSL backend
       - libtool
+      - python3.11
+      - python3.11-devel
+      - python3.11-pip
     state: present
     update_cache: true
 
