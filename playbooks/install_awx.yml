@@ -1,6 +1,6 @@
 ---
 - name: Install AWX on RHEL 9 controller
-  hosts: awx_controllers
+  hosts: localhost
   become: true
   gather_facts: true
 
