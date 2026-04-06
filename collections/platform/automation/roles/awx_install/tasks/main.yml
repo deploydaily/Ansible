@@ -1,4 +1,8 @@
 ---
+- name: AWX install - fetch secrets from Secrets Manager
+  ansible.builtin.include_tasks: secrets.yml
+  tags: [awx, secrets]
+
 - name: AWX install - preflight checks
   ansible.builtin.include_tasks: preflight.yml
   tags: [awx, preflight]
@@ -10,10 +14,6 @@
 - name: AWX install - create user and directories
   ansible.builtin.include_tasks: setup.yml
   tags: [awx, setup]
-
-- name: AWX install - fetch secrets from Secrets Manager
-  ansible.builtin.include_tasks: secrets.yml
-  tags: [awx, secrets]
 
 - name: AWX install - clone and install AWX source
   ansible.builtin.include_tasks: install.yml
