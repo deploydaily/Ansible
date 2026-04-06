@@ -20,6 +20,10 @@
       - curl
       - jq
       - openssl
+      - openldap-devel       # provides lber.h — needed by python-ldap
+      - xmlsec1              # needed by xmlsec Python package
+      - xmlsec1-openssl      # xmlsec OpenSSL backend
+      - libtool-ltdl-devel 
     state: present
     update_cache: true
 
