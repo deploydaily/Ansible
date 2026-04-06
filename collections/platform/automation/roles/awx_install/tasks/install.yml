@@ -15,7 +15,7 @@
   ansible.builtin.shell: python3.11 -m pip install --upgrade pip setuptools wheel
   changed_when: true
 
-- name: Install AWX Python requirements (excluding xmlsec and pinned build tools)
+- name: Install AWX Python requirements for Python 3.11 (excluding xmlsec and pinned build tools)
   ansible.builtin.shell: |
     grep -v "^xmlsec\|^pip==\|^setuptools==" \
       {{ awx_install_dir }}/requirements/requirements.txt \
