@@ -7,10 +7,13 @@
     depth: 1
     force: false
 
-- name: Install AWX Python requirements
-  ansible.builtin.pip:
-    requirements: "{{ awx_install_dir }}/requirements/requirements.txt"
-    executable: pip3
+- name: Install AWX Python requirements (excluding xmlsec)
+  ansible.builtin.shell: |
+    grep -v "^xmlsec" {{ awx_install_dir }}/requirements/requirements.txt > /tmp/requirements_filtered.txt
+    pip3 install -r /tmp/requirements_filtered.txt
+  changed_when: true
+  environment:
+    PKG_CONFIG_PATH: /usr/lib64/pkgconfig:/usr/share/pkgconfig
 
 - name: Install AWX package in editable mode
   ansible.builtin.pip:
