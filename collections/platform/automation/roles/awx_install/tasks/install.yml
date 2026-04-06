@@ -1,4 +1,8 @@
 ---
+- name: Add AWX install dir to git safe directories
+  ansible.builtin.command: git config --global --add safe.directory {{ awx_install_dir }}
+  changed_when: false
+
 - name: Clone AWX source
   ansible.builtin.git:
     repo: https://github.com/ansible/awx.git
