@@ -6,9 +6,6 @@
 
   vars:
     aws_region: "us-east-1"
-    awx_db_host: "awx-postgres.cejy0ioq489t.us-east-1.rds.amazonaws.com"
-    awx_db_secret_name: "awx/db-password"
-    awx_admin_secret_name: "awx/admin-password"
 
   roles:
     - role: platform.automation.os_baseline

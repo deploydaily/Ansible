@@ -16,7 +16,7 @@ keyed_groups:
     prefix: os
     separator: "_"
 compose:
-  ansible_host: public_ip_address
+  ansible_host: private_ip_address
 hostnames:
   - tag:Name
 groups:

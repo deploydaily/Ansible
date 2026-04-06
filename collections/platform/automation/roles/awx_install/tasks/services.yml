@@ -1,4 +1,8 @@
 ---
+- name: Enable Redis module stream on RHEL 9
+  ansible.builtin.command: dnf module enable redis -y
+  changed_when: false
+
 - name: Deploy awx-web systemd unit
   ansible.builtin.template:
     src: awx-web.service.j2

@@ -1,8 +1,30 @@
 ---
+- name: Check if secret key already exists
+  ansible.builtin.stat:
+    path: "{{ awx_config_dir }}/.secret_key"
+  register: secret_key_stat
+
 - name: Generate AWX secret key
   ansible.builtin.shell: openssl rand -hex 64
   register: awx_secret_key_result
-  changed_when: false
+  changed_when: true
+  no_log: true
+  when: not secret_key_stat.stat.exists
+
+- name: Write secret key to file (persist across runs)
+  ansible.builtin.copy:
+    content: "{{ awx_secret_key_result.stdout }}"
+    dest: "{{ awx_config_dir }}/.secret_key"
+    owner: "{{ awx_user }}"
+    group: "{{ awx_group }}"
+    mode: "0600"
+  no_log: true
+  when: not secret_key_stat.stat.exists
+
+- name: Read persisted secret key
+  ansible.builtin.slurp:
+    src: "{{ awx_config_dir }}/.secret_key"
+  register: secret_key_file
   no_log: true
 
 - name: Deploy AWX settings.py
@@ -13,7 +35,7 @@
     group: "{{ awx_group }}"
     mode: "0640"
   vars:
-    awx_secret_key: "{{ awx_secret_key_result.stdout }}"
+    awx_secret_key: "{{ secret_key_file.content | b64decode | trim }}"
   notify:
     - restart awx-web
     - restart awx-task
